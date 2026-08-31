@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 export default function FinalSeverity() {
   const nav = useNavigate()
   const [data, setData] = useState(null)
-  const [loadStage, setLoadStage] = useState(1) // 1 = success, 2 = calculating, 3 = ready
+  const [loadStage, setLoadStage] = useState(1)
   const [apiDataReady, setApiDataReady] = useState(false)
   const [emergency, setEmergency] = useState(false)
   const [acknowledged, setAcknowledged] = useState(false)
@@ -47,7 +47,6 @@ export default function FinalSeverity() {
   const RISK_COLOR = { Low: 'var(--mc-sage)', Moderate: '#F59E0B', High: 'var(--mc-coral)' }
   const color = data ? RISK_COLOR[data.risk_level] || 'var(--mc-coral)' : 'var(--mc-coral)'
 
-  // ── Stage 1 loader ──
   if (loadStage === 1) {
     return (
       <AnimatePresence mode="wait">
@@ -90,7 +89,6 @@ export default function FinalSeverity() {
     )
   }
 
-  // ── Stage 2 / waiting for API ──
   if (loadStage === 2 || !apiDataReady) {
     return (
       <AnimatePresence mode="wait">
@@ -128,7 +126,6 @@ export default function FinalSeverity() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden" style={{ background: 'var(--mc-ink)', color: 'var(--mc-paper)' }}>
-      {/* Soft radial background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -149,7 +146,6 @@ export default function FinalSeverity() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            {/* Brand header */}
             <div className="flex items-center justify-center gap-5 mb-6 mt-4 print:hidden w-full">
               <motion.div
                 className="flex items-center justify-center w-14 h-14 rounded-2xl shrink-0"
@@ -179,7 +175,6 @@ export default function FinalSeverity() {
 
           {data && (
             <div className="space-y-6">
-              {/* User Profile */}
               {data.user_profile && (
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -227,7 +222,6 @@ export default function FinalSeverity() {
                 </motion.div>
               )}
 
-              {/* Big gauge */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -286,7 +280,6 @@ export default function FinalSeverity() {
                 </div>
               </motion.div>
 
-              {/* AI Counsellor Insight */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -370,7 +363,6 @@ export default function FinalSeverity() {
                 </div>
               </motion.div>
 
-              {/* Score breakdown accordions */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -461,9 +453,7 @@ export default function FinalSeverity() {
                                           displayValue = Object.entries(parsed)
                                             .map(([pk, pv]) => `${pk}: ${pv}`)
                                             .join(' | ')
-                                      } catch {
-                                        /* keep as-is */
-                                      }
+                                      } catch {}
                                     } else if (typeof v === 'object' && v !== null) {
                                       displayValue = Object.entries(v)
                                         .map(([pk, pv]) => `${pk}: ${pv}`)
@@ -516,7 +506,6 @@ export default function FinalSeverity() {
                 })}
               </motion.div>
 
-              {/* Emergency modal */}
               <AnimatePresence>
                 {emergency && (
                   <motion.div
@@ -613,7 +602,6 @@ export default function FinalSeverity() {
                 )}
               </AnimatePresence>
 
-              {/* Low risk message */}
               {data.risk_level === 'Low' && (
                 <motion.div
                   className="rounded-2xl p-6 text-center"
@@ -639,7 +627,6 @@ export default function FinalSeverity() {
                 </motion.div>
               )}
 
-              {/* CTA */}
               <div className="pt-6">
                 <motion.button
                   onClick={() => nav('/dashboard')}
@@ -673,4 +660,3 @@ export default function FinalSeverity() {
     </div>
   )
 }
-

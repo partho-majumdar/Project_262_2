@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import API from '../api'
 
 export default function ForgotPassword() {
-  const [step, setStep] = useState(1) // 1: Email, 2: OTP, 3: New Password
+  const [step, setStep] = useState(1)
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -80,7 +80,6 @@ export default function ForgotPassword() {
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-10 md:py-14">
-      {/* Soft radial background — matches Login / Register */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -100,7 +99,6 @@ export default function ForgotPassword() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-[440px] relative z-10"
       >
-        {/* Brand — same as Login / Register */}
         <div className="text-center mb-7 flex flex-col items-center">
           <motion.div
             className="flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
@@ -129,9 +127,7 @@ export default function ForgotPassword() {
           </p>
         </div>
 
-        {/* Form card */}
         <div className="mc-card-form p-6 md:p-8 mb-5">
-          {/* STEP 1: EMAIL */}
           {step === 1 && (
             <form onSubmit={handleSendOTP} className="flex flex-col gap-5">
               <div className="flex flex-col">

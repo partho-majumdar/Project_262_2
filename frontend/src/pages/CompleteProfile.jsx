@@ -50,7 +50,6 @@ export default function CompleteProfile() {
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-10 md:py-14">
-      {/* Soft radial background — matches Login / Register */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div
           className="absolute inset-0"
