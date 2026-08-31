@@ -143,13 +143,11 @@ async def google_login(req: GoogleLoginRequest, db: Session = Depends(get_db)):
     """Verify Google OAuth token and create/login user."""
     try:
         async with httpx.AsyncClient() as client:
-            # First try verifying as ID Token (OpenID Connect)
             id_token_resp = await client.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={req.token}")
             
             if id_token_resp.status_code == 200:
                 info = id_token_resp.json()
             else:
-                # Fallback: Try as Access Token (Userinfo endpoint)
                 userinfo_resp = await client.get(
                     "https://www.googleapis.com/oauth2/v3/userinfo",
                     headers={"Authorization": f"Bearer {req.token}"}
@@ -190,7 +188,6 @@ async def google_login(req: GoogleLoginRequest, db: Session = Depends(get_db)):
     #     raise HTTPException(status_code=500, detail=f"OAuth Error: {str(e)}")
                 token = create_access_token({"sub": str(user.id)}, timedelta(minutes=120))
 
-            # Check if profile is incomplete (Google default values)
             is_incomplete = (
                 user.gender == "Not specified"
                 or user.occupation == "Other"

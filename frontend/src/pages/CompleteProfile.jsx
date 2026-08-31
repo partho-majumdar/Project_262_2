@@ -89,7 +89,6 @@ export default function CompleteProfile() {
             >
               <option className="bg-[#05110d]">Male</option>
               <option className="bg-[#05110d]">Female</option>
-              <option className="bg-[#05110d]">Other</option>
             </select>
           </div>
 

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom'
+import { useGoogleLogin } from '@react-oauth/google'
 import { Brain, User, Mail, Lock, Phone, MapPin, ChevronRight, ChevronLeft, Eye, EyeOff } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 import API from '../api'
 import toast from 'react-hot-toast'
 
@@ -41,6 +43,39 @@ export default function Register() {
   const [showPwd, setShowPwd] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const nav = useNavigate()
+  const { login } = useAuth()
+
+  // ── Google one-click sign-up ──
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const { data } = await API.post('/auth/google-login', {
+          token: tokenResponse.access_token || tokenResponse.credential,
+        })
+        login(data.user, data.access_token)
+        toast.success(`Welcome, ${data.user.full_name}!`)
+
+        if (data.profile_complete === false) {
+          nav('/complete-profile')
+          return
+        }
+
+        try {
+          const dashRes = await API.get('/dashboard-data')
+          if (dashRes.data?.severity?.final_severity) {
+            nav('/dashboard')
+          } else {
+            nav('/behaviour')
+          }
+        } catch {
+          nav('/behaviour')
+        }
+      } catch {
+        toast.error('Google Sign-up failed')
+      }
+    },
+    onError: () => toast.error('Google Sign-up Failed'),
+  })
 
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
@@ -141,6 +176,30 @@ export default function Register() {
           <p className="mc-body text-[14px]" style={{ color: 'var(--mc-muted)', maxWidth: 400 }}>
             Join MindCare AI for personalised wellness support
           </p>
+        </div>
+
+        {/* Google one-click */}
+        <motion.button
+          type="button"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => googleLogin()}
+          className="mc-btn-secondary w-full py-3.5 text-sm mb-5"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path
+              fill="#4285F4"
+              d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-1.07 2.978-4.844 2.978-2.921 0-5.4-2.373-5.4-5.4 0-3.026 2.479-5.4 5.4-5.4 1.713 0 2.865.632 3.536 1.244l2.433-2.375C13.9.84 11.665 0 9 0 4.02 0 0 4.024 0 9s4.02 9 9 9c5.16 0 8.44-3.672 8.44-8.8 0-.6-.068-1.058-.16-1.448l-.16-.352z"
+            />
+          </svg>
+          Continue with Google
+        </motion.button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="flex-1 h-px" style={{ background: 'var(--mc-line)' }} />
+          <span className="mc-caption">Or register with email</span>
+          <div className="flex-1 h-px" style={{ background: 'var(--mc-line)' }} />
         </div>
 
         {/* Progress */}
