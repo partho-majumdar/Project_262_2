@@ -18,21 +18,18 @@ import Particles from './components/Particles'
 import CustomCursor from './components/CustomCursor'
 import CinematicTransition from './components/CinematicTransition'
 import CompleteProfile from './pages/CompleteProfile'
-import './App.css'
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth()
   return isAuthenticated ? children : <Navigate to="/login" replace />
 }
 
-/* Separate component so useLocation hook works inside BrowserRouter */
 function AppRoutes() {
   const location = useLocation()
   const isLanding = location.pathname === '/'
 
   return (
     <div className="relative min-h-screen">
-      {/* Particle backdrop only on inner pages (Landing has its own WebGL bg) */}
       {!isLanding && <Particles />}
 
       <div className="relative z-10">
