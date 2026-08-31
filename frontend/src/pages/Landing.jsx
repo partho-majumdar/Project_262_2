@@ -704,7 +704,7 @@ export default function Landing() {
                                 One score, built from four signals.
                             </h2>
                             <p className="mc-body" style={{ fontSize: 14.5, color: 'var(--mc-muted)', maxWidth: 460 }}>
-                                MindCare AI fuses behaviour, voice, expression, and conversation into a single severity score, in under two minutes.
+                                Mindora AI fuses behaviour, voice, expression, and conversation into a single severity score, in under two minutes.
                             </p>
                             <div className="flex flex-col gap-2.5 mt-1">
                                 {['Four signals read at once', 'Weighted fusion, not an average', 'Clinical-grade risk stratification', 'Automatic routing for high-risk results'].map((item) => (
@@ -832,7 +832,7 @@ export default function Landing() {
                             <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'var(--mc-coral)' }}>
                                 <Brain size={13} color="#10131a" />
                             </div>
-                            <span className="mc-serif" style={{ fontSize: 14, color: 'var(--mc-paper)' }}>MindCare AI</span>
+                            <span className="mc-serif" style={{ fontSize: 14, color: 'var(--mc-paper)' }}>Mindora AI</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <button onClick={() => nav('/login')} style={{ fontSize: 12.5, color: 'var(--mc-muted)', background: 'none', border: 'none', padding: '8px 14px' }}>Sign in</button>
@@ -841,12 +841,12 @@ export default function Landing() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
-                        <span style={{ fontSize: 11, color: 'var(--mc-muted)' }}>© 2026 MindCare AI</span>
+                        <span style={{ fontSize: 11, color: 'var(--mc-muted)' }}>© 2026 Mindora AI</span>
                         <div className="flex items-center gap-6">
                             {[
                                 { label: 'Privacy', message: 'Session data is end-to-end encrypted and never stored permanently.' },
-                                { label: 'Terms', message: 'MindCare AI is a support tool, not a substitute for clinical medical advice.' },
-                                { label: 'Contact', message: 'Reach our support team at support@mindcareai.com' },
+                                { label: 'Terms', message: 'Mindora AI is a support tool, not a substitute for clinical medical advice.' },
+                                { label: 'Contact', message: 'Reach our support team at support@mindoraai.com' },
                             ].map(item => (
                                 <button
                                     key={item.label}

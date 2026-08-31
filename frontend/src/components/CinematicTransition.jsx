@@ -99,7 +99,7 @@ export default function CinematicTransition({ children }) {
             userSelect: 'none',
           }}
         >
-          MindCare AI
+          Mindora AI
         </div>
       </motion.div>
     </>

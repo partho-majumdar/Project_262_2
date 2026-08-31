@@ -36,7 +36,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [showPreloader, setShowPreloader] = useState(true)
   const [chatMessages, setChatMessages] = useState([
-    { role: 'assistant', text: 'Hello! I am Dr. MindCare. How are you feeling today?' }
+    { role: 'assistant', text: 'Hello! I am Dr. Mindora. How are you feeling today?' }
   ])
   const [chatInput, setChatInput] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
@@ -227,7 +227,7 @@ export default function Dashboard() {
             <motion.div className="mc-brand-icon" animate={{ y: [0, -5, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
               <Brain size={26} className="mc-text-coral" />
             </motion.div>
-            <span className="mc-display text-[clamp(28px,5vw,42px)] mc-text-paper">MindCare AI</span>
+            <span className="mc-display text-[clamp(28px,5vw,42px)] mc-text-paper">Mindora AI</span>
           </div>
 
           {/* Welcome + actions */}
@@ -554,7 +554,7 @@ export default function Dashboard() {
                     <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[var(--mc-sage)] border-[3px] border-[var(--mc-ink)] rounded-full" />
                   </div>
                   <div>
-                    <h3 className="mc-heading text-lg mc-text-paper">Dr. MindCare</h3>
+                    <h3 className="mc-heading text-lg mc-text-paper">Dr. Mindora</h3>
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[var(--mc-sage)] animate-pulse" />
                       <span className="mc-caption mc-text-sage">AI Therapist Online</span>

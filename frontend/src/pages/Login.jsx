@@ -117,7 +117,7 @@ export default function Login() {
             className="mc-body text-[14px]"
             style={{ color: 'var(--mc-muted)', maxWidth: 360 }}
           >
-            Secure access to your MindCare AI dashboard
+            Secure access to your Mindora AI dashboard
           </p>
         </div>
 

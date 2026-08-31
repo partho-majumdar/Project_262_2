@@ -37,14 +37,14 @@ export default function ChatCounselling() {
       } else {
         setMessages([{
           id: 1, sender: 'bot',
-          message: `Hi ${user?.full_name || 'there'}! 👋 I'm your MindCare AI counsellor.\n\nI'm here to listen and help you. **What is your problem?**`,
+          message: `Hi ${user?.full_name || 'there'}! 👋 I'm your Mindora AI counsellor.\n\nI'm here to listen and help you. **What is your problem?**`,
           timestamp: new Date().toISOString()
         }])
       }
     }).catch(() => {
       setMessages([{
         id: 1, sender: 'bot',
-        message: `Hi ${user?.full_name}! 👋 I'm your MindCare AI counsellor. I'm here to listen and help you. What is your problem?`,
+        message: `Hi ${user?.full_name}! 👋 I'm your Mindora AI counsellor. I'm here to listen and help you. What is your problem?`,
         timestamp: new Date().toISOString()
       }])
     })
@@ -326,7 +326,7 @@ export default function ChatCounselling() {
               <motion.div className="mc-brand-icon" animate={{ y: [0, -5, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
                 <Brain size={26} className="mc-text-coral" />
               </motion.div>
-              <span className="mc-display text-[clamp(28px,5vw,42px)] mc-text-paper">MindCare AI</span>
+              <span className="mc-display text-[clamp(28px,5vw,42px)] mc-text-paper">Mindora AI</span>
             </div>
 
             <div className="w-full flex justify-center print:hidden">
