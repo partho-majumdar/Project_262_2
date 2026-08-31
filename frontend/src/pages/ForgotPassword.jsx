@@ -1,171 +1,318 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Brain, Mail, ArrowLeft, Key, Lock, Eye, EyeOff } from 'lucide-react'
 import toast from 'react-hot-toast'
 import API from '../api'
 
-
 export default function ForgotPassword() {
-    const [step, setStep] = useState(1) // 1: Email, 2: OTP, 3: New Password
-    const [email, setEmail] = useState('')
-    const [otp, setOtp] = useState('')
-    const [newPassword, setNewPassword] = useState('')
-    const [showPwd, setShowPwd] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [countdown, setCountdown] = useState(0)
-    const nav = useNavigate()
+  const [step, setStep] = useState(1) // 1: Email, 2: OTP, 3: New Password
+  const [email, setEmail] = useState('')
+  const [otp, setOtp] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [showPwd, setShowPwd] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+  const nav = useNavigate()
 
-    // OTP Countdown Timer
-    useEffect(() => {
-        let timer;
-        if (countdown > 0 && step === 2) {
-            timer = setInterval(() => setCountdown(c => c - 1), 1000);
-        }
-        return () => clearInterval(timer);
-    }, [countdown, step]);
-
-    const handleSendOTP = async (e) => {
-        e?.preventDefault();
-        setLoading(true);
-        try {
-            // Adjust endpoint as per your backend
-            await API.post('/auth/forgot-password', { email });
-            toast.success('OTP sent to your email!');
-            setStep(2);
-            setCountdown(60);
-        } catch (err) {
-            toast.error(err.response?.data?.detail || 'Failed to send OTP. Check your email.');
-        } finally {
-            setLoading(false);
-        }
+  useEffect(() => {
+    let timer
+    if (countdown > 0 && step === 2) {
+      timer = setInterval(() => setCountdown((c) => c - 1), 1000)
     }
+    return () => clearInterval(timer)
+  }, [countdown, step])
 
-    const handleVerifyOTP = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            // Adjust endpoint as per your backend
-            await API.post('/auth/verify-otp', { email, otp });
-            toast.success('OTP Verified!');
-            setStep(3);
-        } catch (err) {
-            toast.error(err.response?.data?.detail || 'Invalid OTP. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+  const handleSendOTP = async (e) => {
+    e?.preventDefault()
+    setLoading(true)
+    try {
+      await API.post('/auth/forgot-password', { email })
+      toast.success('OTP sent to your email!')
+      setStep(2)
+      setCountdown(60)
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to send OTP. Check your email.')
+    } finally {
+      setLoading(false)
     }
+  }
 
-    const handleResetPassword = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            // Adjust endpoint as per your backend
-            await API.post('/auth/reset-password', { email, newPassword });
-            toast.success('Password reset successfully! Please login.');
-            nav('/login');
-        } catch (err) {
-            toast.error(err.response?.data?.detail || 'Failed to reset password.');
-        } finally {
-            setLoading(false);
-        }
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      await API.post('/auth/verify-otp', { email, otp })
+      toast.success('OTP Verified!')
+      setStep(3)
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Invalid OTP. Please try again.')
+    } finally {
+      setLoading(false)
     }
+  }
 
-    return (
-        <div className="relative min-h-screen bg-[#05110d] overflow-hidden font-sans flex items-center justify-center p-4">
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(8,8,8,0.9) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 0% 50%, rgba(8,8,8,0.5) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 100% 20%, rgba(0,255,136,0.04) 0%, transparent 60%)' }} />
-            </div>
+  const handleResetPassword = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      await API.post('/auth/reset-password', { email, newPassword })
+      toast.success('Password reset successfully! Please login.')
+      nav('/login')
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to reset password.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="w-full max-w-[440px] relative z-10">
+  const titles = {
+    1: 'Reset Password',
+    2: 'Enter OTP',
+    3: 'New Password',
+  }
 
-                <div className="text-center mb-8 flex flex-col items-center">
-                    <div className="flex items-center justify-center gap-4 mb-6">
-                        <motion.div animate={{ boxShadow: ['0 0 24px rgba(0,255,136,0.25)', '0 0 64px rgba(0,255,136,0.65)', '0 0 24px rgba(0,255,136,0.25)'] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg, rgba(0,255,136,0.22) 0%, rgba(0,204,106,0.07) 100%)', border: '1.5px solid rgba(0,255,136,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <Brain size={26} style={{ color: '#00ff88' }} />
-                        </motion.div>
-                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '32px', fontWeight: 800, letterSpacing: '0.09em', textTransform: 'uppercase', background: 'linear-gradient(170deg, #ffffff 10%, #d1fae5 55%, #6ee7b7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'inline-block' }}>
-                            MINDCARE AI
-                        </span>
-                    </div>
-                    <h1 className="font-display text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 font-extrabold text-3xl tracking-tight mb-2">
-                        {step === 1 ? 'Reset Password' : step === 2 ? 'Enter OTP' : 'New Password'}
-                    </h1>
-                    <p className="font-sans font-light text-slate-500 text-sm tracking-wide">
-                        {step === 1 ? 'Enter your email to receive a reset link.' : step === 2 ? `We sent a code to ${email}` : 'Secure your account with a new password.'}
-                    </p>
-                </div>
+  const subtitles = {
+    1: 'Enter your email to receive a reset code',
+    2: `We sent a 6-digit code to ${email}`,
+    3: 'Secure your account with a new password',
+  }
 
-                <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)] rounded-3xl p-8 md:p-10 at-noise">
+  return (
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-10 md:py-14">
+      {/* Soft radial background — matches Login / Register */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,122,89,0.06) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 40% at 80% 80%, rgba(127,169,142,0.05) 0%, transparent 50%),
+              var(--mc-ink)
+            `,
+          }}
+        />
+      </div>
 
-                    {/* STEP 1: EMAIL */}
-                    {step === 1 && (
-                        <form onSubmit={handleSendOTP} className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-2">
-                                <label className="uppercase tracking-[0.15em] text-[10px] font-bold text-emerald-500/80 pl-1 mb-1">Email Address</label>
-                                <div className="relative group">
-                                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors pointer-events-none" />
-                                    <input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pl-11 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/5 focus:ring-1 focus:ring-emerald-500/50 transition-all font-sans text-sm" required />
-                                </div>
-                            </div>
-                            <motion.button type="submit" disabled={loading || !email} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }} className="mt-2 w-full flex items-center justify-center py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold rounded-xl transition-all font-display tracking-widest uppercase text-xs shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
-                                {loading ? 'Sending...' : 'Send Reset Link'}
-                            </motion.button>
-                        </form>
-                    )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-[440px] relative z-10"
+      >
+        {/* Brand — same as Login / Register */}
+        <div className="text-center mb-7 flex flex-col items-center">
+          <motion.div
+            className="flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
+            style={{
+              background: 'rgba(255,122,89,0.14)',
+              border: '1px solid rgba(255,122,89,0.25)',
+            }}
+            whileHover={{ scale: 1.04 }}
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Brain size={26} style={{ color: 'var(--mc-coral)' }} />
+          </motion.div>
 
-                    {/* STEP 2: OTP */}
-                    {step === 2 && (
-                        <form onSubmit={handleVerifyOTP} className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-2">
-                                <label className="uppercase tracking-[0.15em] text-[10px] font-bold text-emerald-500/80 pl-1 mb-1">6-Digit OTP</label>
-                                <div className="relative group">
-                                    <Key size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors pointer-events-none" />
-                                    <input type="text" maxLength="6" placeholder="• • • • • •" value={otp} onChange={e => setOtp(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pl-11 tracking-[0.5em] text-center text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/5 focus:ring-1 focus:ring-emerald-500/50 transition-all font-sans text-lg" required />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between text-sm px-1">
-                                <span className="text-slate-500">Didn't receive it?</span>
-                                <button type="button" disabled={countdown > 0 || loading} onClick={handleSendOTP} className="text-emerald-400 font-medium hover:text-emerald-300 disabled:text-slate-600 transition-colors">
-                                    {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
-                                </button>
-                            </div>
-
-                            <motion.button type="submit" disabled={loading || otp.length < 4} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }} className="mt-2 w-full flex items-center justify-center py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold rounded-xl transition-all font-display tracking-widest uppercase text-xs shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
-                                {loading ? 'Verifying...' : 'Verify OTP'}
-                            </motion.button>
-                        </form>
-                    )}
-
-                    {/* STEP 3: NEW PASSWORD */}
-                    {step === 3 && (
-                        <form onSubmit={handleResetPassword} className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-2">
-                                <label className="uppercase tracking-[0.15em] text-[10px] font-bold text-emerald-500/80 pl-1 mb-1">New Password</label>
-                                <div className="relative group">
-                                    <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-500 transition-colors pointer-events-none" />
-                                    <input type={showPwd ? 'text' : 'password'} placeholder="••••••••" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pl-11 pr-12 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:bg-white/5 focus:ring-1 focus:ring-emerald-500/50 transition-all font-sans tracking-wider text-sm" required />
-                                    <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-emerald-400 transition-colors">
-                                        {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-                            <motion.button type="submit" disabled={loading || !newPassword} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }} className="mt-2 w-full flex items-center justify-center py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-bold rounded-xl transition-all font-display tracking-widest uppercase text-xs shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
-                                {loading ? 'Updating...' : 'Update Password'}
-                            </motion.button>
-                        </form>
-                    )}
-
-                    {/* Back Link */}
-                    <div className="mt-8 text-center">
-                        <button onClick={() => step > 1 ? setStep(step - 1) : nav('/login')} className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-sans text-sm font-medium">
-                            <ArrowLeft size={16} />
-                            {step > 1 ? 'Back' : 'Back to Sign In'}
-                        </button>
-                    </div>
-                </div>
-            </motion.div>
+          <h1
+            className="mc-display text-[clamp(26px,5vw,32px)] mb-1.5"
+            style={{ color: 'var(--mc-paper)' }}
+          >
+            {titles[step]}
+          </h1>
+          <p
+            className="mc-body text-[14px]"
+            style={{ color: 'var(--mc-muted)', maxWidth: 360 }}
+          >
+            {subtitles[step]}
+          </p>
         </div>
-    )
+
+        {/* Form card */}
+        <div className="mc-card-form p-6 md:p-8 mb-5">
+          {/* STEP 1: EMAIL */}
+          {step === 1 && (
+            <form onSubmit={handleSendOTP} className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <label className="mc-label">Email Address</label>
+                <div className="relative group">
+                  <Mail
+                    size={17}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
+                    style={{ color: 'var(--mc-muted)' }}
+                  />
+                  <input
+                    type="email"
+                    className="mc-input"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <motion.button
+                type="submit"
+                disabled={loading || !email}
+                whileHover={{ scale: loading ? 1 : 1.01 }}
+                whileTap={{ scale: loading ? 1 : 0.98 }}
+                className="mc-btn-primary w-full py-3.5 text-sm mt-1"
+              >
+                {loading ? (
+                  <>
+                    <div
+                      className="w-4 h-4 rounded-full border-2 animate-spin"
+                      style={{
+                        borderColor: 'rgba(16,19,26,0.3)',
+                        borderTopColor: 'var(--mc-ink)',
+                      }}
+                    />
+                    Sending...
+                  </>
+                ) : (
+                  'Send Reset Code'
+                )}
+              </motion.button>
+            </form>
+          )}
+
+          {/* STEP 2: OTP */}
+          {step === 2 && (
+            <form onSubmit={handleVerifyOTP} className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <label className="mc-label">6-Digit OTP</label>
+                <div className="relative group">
+                  <Key
+                    size={17}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
+                    style={{ color: 'var(--mc-muted)' }}
+                  />
+                  <input
+                    type="text"
+                    maxLength={6}
+                    className="mc-input"
+                    style={{ letterSpacing: '0.35em', textAlign: 'center', paddingLeft: 44 }}
+                    placeholder="••••••"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-sm px-0.5">
+                <span style={{ color: 'var(--mc-muted)' }}>Didn’t receive it?</span>
+                <button
+                  type="button"
+                  disabled={countdown > 0 || loading}
+                  onClick={handleSendOTP}
+                  className="font-medium transition-colors disabled:opacity-50"
+                  style={{ color: countdown > 0 ? 'var(--mc-muted)' : 'var(--mc-coral)' }}
+                >
+                  {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
+                </button>
+              </div>
+
+              <motion.button
+                type="submit"
+                disabled={loading || otp.length < 4}
+                whileHover={{ scale: loading ? 1 : 1.01 }}
+                whileTap={{ scale: loading ? 1 : 0.98 }}
+                className="mc-btn-primary w-full py-3.5 text-sm mt-1"
+              >
+                {loading ? (
+                  <>
+                    <div
+                      className="w-4 h-4 rounded-full border-2 animate-spin"
+                      style={{
+                        borderColor: 'rgba(16,19,26,0.3)',
+                        borderTopColor: 'var(--mc-ink)',
+                      }}
+                    />
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify OTP'
+                )}
+              </motion.button>
+            </form>
+          )}
+
+          {/* STEP 3: NEW PASSWORD */}
+          {step === 3 && (
+            <form onSubmit={handleResetPassword} className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <label className="mc-label">New Password</label>
+                <div className="relative group">
+                  <Lock
+                    size={17}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
+                    style={{ color: 'var(--mc-muted)' }}
+                  />
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    className="mc-input"
+                    style={{ paddingRight: 44 }}
+                    placeholder="••••••••"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd(!showPwd)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 z-20"
+                    style={{ color: 'var(--mc-muted)' }}
+                  >
+                    {showPwd ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+              </div>
+
+              <motion.button
+                type="submit"
+                disabled={loading || !newPassword}
+                whileHover={{ scale: loading ? 1 : 1.01 }}
+                whileTap={{ scale: loading ? 1 : 0.98 }}
+                className="mc-btn-primary w-full py-3.5 text-sm mt-1"
+              >
+                {loading ? (
+                  <>
+                    <div
+                      className="w-4 h-4 rounded-full border-2 animate-spin"
+                      style={{
+                        borderColor: 'rgba(16,19,26,0.3)',
+                        borderTopColor: 'var(--mc-ink)',
+                      }}
+                    />
+                    Updating...
+                  </>
+                ) : (
+                  'Update Password'
+                )}
+              </motion.button>
+            </form>
+          )}
+        </div>
+
+        {/* Back link — matches Login footer style */}
+        <p className="text-center text-sm pb-2" style={{ color: 'var(--mc-muted)' }}>
+          <button
+            type="button"
+            onClick={() => (step > 1 ? setStep(step - 1) : nav('/login'))}
+            className="inline-flex items-center gap-2 font-medium transition-colors"
+            style={{ color: 'var(--mc-muted)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mc-coral)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mc-muted)')}
+          >
+            <ArrowLeft size={15} />
+            {step > 1 ? 'Back' : 'Back to Sign In'}
+          </button>
+        </p>
+      </motion.div>
+    </div>
+  )
 }
+
